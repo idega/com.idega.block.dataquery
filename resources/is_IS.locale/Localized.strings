@@ -328,6 +328,7 @@ btn_func.alias=Anna\u00F0 nafn
 btn_func.avg=Avg
 btn_func.concat=Concat
 btn_func.count=Count
+btn_func.distinct=Velja einkv\u00E6mt
 btn_func.max=Max
 btn_func.min=Min
 btn_func.sum=Sum
