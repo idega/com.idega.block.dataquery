@@ -55,6 +55,16 @@
 	 <idegaweb.bundle.include>true</idegaweb.bundle.include>
 	 </properties>
     </dependency>
+   <dependency>
+      <groupId>jug</groupId>
+      <artifactId>jug</artifactId>
+      <version>1.1</version>
+      <type>jar</type>
+      <url>http://www.doomdark.org/doomdark/proj/jug/</url>
+      <properties>
+        <idegaweb.bundle.include>true</idegaweb.bundle.include>
+      </properties>
+    </dependency>
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>

@@ -7,6 +7,8 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/jasperreports/jars/jasperreports-0.5.2.jar">
   </classpathentry>
+  <classpathentry kind="var" path="MAVEN_REPO/jug/jars/jug-1.1.jar">
+  </classpathentry>
   <classpathentry kind="src" path="/com.idega.core">
   </classpathentry>
   <classpathentry kind="src" path="/com.idega.block.category">
