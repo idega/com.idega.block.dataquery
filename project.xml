@@ -7,6 +7,11 @@
   <artifactId>com.idega.block.dataquery</artifactId>
   <currentVersion>1.0</currentVersion>
   <versions>
+    <version>
+      <id>1.0</id>
+      <name>1.0</name>
+      <tag>DATAQUERY_1_0</tag>
+    </version>
   </versions>
   <branches/>
   <developers>
@@ -47,12 +52,11 @@
       <type>jar</type>
       <url>http://jasperreports.sourceforge.net/</url>
     </dependency>
-
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
       <version>1.9</version>
-     <!-- <version>SNAPSHOT</version>-->
+      <!-- <version>SNAPSHOT</version>-->
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -65,6 +69,7 @@
       <artifactId>com.idega.block.category</artifactId>
       <version>1.0</version>
       <!--<version>SNAPSHOT</version>-->
+
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -76,6 +81,7 @@
       <artifactId>com.idega.builder</artifactId>
       <version>1.1</version>
       <!--<version>SNAPSHOT</version>-->
+
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -87,6 +93,7 @@
       <artifactId>com.idega.block.media</artifactId>
       <version>1.0</version>
       <!--<version>SNAPSHOT</version>-->
+
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
@@ -98,6 +105,7 @@
       <artifactId>com.idega.block.entity</artifactId>
       <version>1.0</version>
       <!--<version>SNAPSHOT</version>-->
+
       <type>jar</type>
       <url>http://www.idega.com/</url>
       <properties>
