@@ -53,6 +53,11 @@
       <type>java.lang.String</type>
       <value>com.idega.block.dataquery</value>
     </key>
+    <key>
+      <name>ADD_QUERY_SQL_FOR_DEBUG</name>
+      <type>java.lang.String</type>
+      <value>true</value>
+    </key>
   </map>
 </pxml>
 
