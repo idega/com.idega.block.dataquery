@@ -51,6 +51,9 @@
       <version>0.5.2</version>
       <type>jar</type>
       <url>http://jasperreports.sourceforge.net/</url>
+	  <properties>
+	 <idegaweb.bundle.include>true</idegaweb.bundle.include>
+	 </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
