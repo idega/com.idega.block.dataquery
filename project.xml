@@ -5,7 +5,8 @@
   <pomVersion>3</pomVersion>
   <name>idegaWeb Dataquery Block</name>
   <artifactId>com.idega.block.dataquery</artifactId>
-  <currentVersion>1.1-SNAPSHOT</currentVersion>
+  <currentVersion>1.0.1</currentVersion>
+  <!--currentVersion>1.1-SNAPSHOT</currentVersion-->
   <versions>
     <version>
       <id>1.0</id>
@@ -56,20 +57,18 @@
 	 </properties>
     </dependency>
    <dependency>
+   <!-- already included in core -->
       <groupId>jug</groupId>
       <artifactId>jug</artifactId>
       <version>1.1</version>
       <type>jar</type>
       <url>http://www.doomdark.org/doomdark/proj/jug/</url>
-      <properties>
-        <idegaweb.bundle.include>true</idegaweb.bundle.include>
-      </properties>
     </dependency>
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
-      <!--<version>1.9</version>-->
-      <version>SNAPSHOT</version>
+      <!--HELPER--><version>3.0.5</version><!--HELPER-->
+      <!--HELPERversion>SNAPSHOT</versionHELPER-->
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -80,8 +79,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.category</artifactId>
-      <!--<version>1.0</version>-->
-      <version>SNAPSHOT</version>
+      <!--HELPER--><version>1.0.1</version><!--HELPER-->
+      <!--HELPERversion>SNAPSHOT</versionHELPER-->
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -92,8 +91,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.builder</artifactId>
-      <!--<version>1.1</version>-->
-      <version>SNAPSHOT</version>
+      <!--HELPER--><version>1.4.2</version><!--HELPER-->
+      <!--HELPERversion>SNAPSHOT</versionHELPER-->
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -104,8 +103,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.media</artifactId>
-      <!--<version>1.0</version>-->
-      <version>SNAPSHOT</version>
+      <!--HELPER--><version>1.1.2</version><!--HELPER-->
+      <!--HELPERversion>SNAPSHOT</versionHELPER-->
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
@@ -116,8 +115,8 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.block.entity</artifactId>
-      <!--<version>1.0</version>-->
-      <version>SNAPSHOT</version>
+      <!--HELPER--><version>1.1.2</version><!--HELPER-->
+      <!--HELPERversion>SNAPSHOT</versionHELPER-->
 
       <type>jar</type>
       <url>http://www.idega.com/</url>
