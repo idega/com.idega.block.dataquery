@@ -6,45 +6,6 @@
       <value>
         <map>
           <key>
-            <name>com.idega.block.dataquery.test.CreatingAndReadingQueryResultTest</name>
-            <value>
-              <map>
-                <key>
-                  <name>component_property_file</name>
-                  <type>java.lang.String</type>
-                  <value>com.idega.block.dataquery.test.CreatingAndReadingQueryResultTest.pxml</value>
-                </key>
-              </map>
-            </value>
-            <type>map</type>
-          </key>
-          <key>
-            <name>com.idega.block.dataquery.presentation.QueryBuilder</name>
-            <value>
-              <map>
-                <key>
-                  <name>component_property_file</name>
-                  <type>java.lang.String</type>
-                  <value>com.idega.block.dataquery.presentation.QueryBuilder.pxml</value>
-                </key>
-              </map>
-            </value>
-            <type>map</type>
-          </key>
-          <key>
-            <name>com.idega.block.datareport.presentation.ReportLayoutChooser</name>
-            <value>
-              <map>
-                <key>
-                  <name>component_property_file</name>
-                  <type>java.lang.String</type>
-                  <value>com.idega.block.datareport.presentation.ReportLayoutChooser.pxml</value>
-                </key>
-              </map>
-            </value>
-            <type>map</type>
-          </key>
-          <key>
             <name>com.idega.block.datareport.business.JasperReportBusiness</name>
             <value>
               <map>
@@ -73,4 +34,3 @@
     </key>
   </map>
 </pxml>
-
