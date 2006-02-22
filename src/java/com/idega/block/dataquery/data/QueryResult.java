@@ -29,8 +29,6 @@ public class QueryResult implements JRDataSource {
   private static final String DEFINITION = "definition";
   private static final String CONTENT = "content";
   
-  private static final String DEFAULT_VALUE = "[not found]";
-  
   private List fieldOrder = new ArrayList();  
   private Map fields = new HashMap();
   
