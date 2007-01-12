@@ -105,8 +105,8 @@ public class QueryFieldPart implements QueryPart {
 			el.setAttribute(QueryXMLConstants.FUNCTION,this.function);
 		}
   	if(this.typeClass!=null && !this.typeClass.equalsIgnoreCase("null")) {
-			el.setAttribute(QueryXMLConstants.TYPE,this.typeClass);
-		}
+		el.setAttribute(QueryXMLConstants.TYPE,this.typeClass);
+	}
 	  if (this.aliasName != null && !this.aliasName.equalsIgnoreCase("null")) {
 	  		XMLElement xmlAliasName = new XMLElement(QueryXMLConstants.ALIAS_NAME);
 	  		xmlAliasName.addContent(this.aliasName);

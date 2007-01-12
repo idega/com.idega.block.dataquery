@@ -5,6 +5,7 @@
 package com.idega.block.dataquery.presentation;
 
 import com.idega.core.file.data.ICFile;
+import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWResourceBundle;
 import com.idega.presentation.Block;
 import com.idega.presentation.IWContext;
@@ -24,10 +25,10 @@ import com.idega.presentation.ui.TreeViewerSelection;
  */
 
 public class QuerySelector extends Block {
-
+	private IWBundle iwb = null;
 	private IWResourceBundle iwrb = null;
 	private static final String IWBUNDLE_IDENTIFIER = "com.idega.block.dataquery";
-
+	private boolean hasPermission = false;
 	private Image templateIcon = null;
 	private Image staticIcon = null;
 	private Image userIcon = null;
@@ -55,7 +56,9 @@ public class QuerySelector extends Block {
 	 * @see com.idega.presentation.PresentationObject#main(com.idega.presentation.IWContext)
 	 */
 	public void main(IWContext iwc) throws Exception {
+		this.iwb = getBundle(iwc);
 		this.iwrb = getResourceBundle(iwc);
+		this.hasPermission = hasEditPermission();
 		initiate(iwc);
 		presentate(iwc);
 	}
