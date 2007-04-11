@@ -27,6 +27,11 @@
       <name>3.1.1</name>
       <tag>DATAQUERY_3_1_1</tag>
     </version>
+    <version>
+      <id>3.1.2</id>
+      <name>3.1.2</name>
+      <tag>DATAQUERY_3_1_2</tag>
+    </version>
   </versions>
   <branches/>
   <developers>
@@ -72,6 +77,7 @@
     </dependency>
     <dependency>
       <!-- already included in core -->
+
       <groupId>jug</groupId>
       <artifactId>jug</artifactId>
       <version>1.1</version>
