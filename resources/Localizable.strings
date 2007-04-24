@@ -502,6 +502,7 @@ ro_number_of_rows_in\ result\ _might_be_too_large=Number of rows might be too la
 ro_okay=
 ro_print_html_preview=
 ro_query_could_not_be_created=Gat ekki b\u00FAi\u00F0 til sk\u00FDrsluna
+ro_query_description=Query description
 ro_query_was_created_or_modified=\u00DEessi sk\u00FDrsla var b\u00FAin til e\u00F0a henni var breytt
 ro_report=Sk\u00FDrslut\u00F3l
 ro_report_viewer=ReportGeneratorViewer
