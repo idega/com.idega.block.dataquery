@@ -1,7 +1,7 @@
 /*
  * Created on May 27, 2003
  *
- * To change this generated comment go to 
+ * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code Template
  */
 package com.idega.block.dataquery.data.xml;
@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.idega.data.IDOEntity;
 import com.idega.data.IDOEntityDefinition;
 import com.idega.data.IDOEntityField;
 import com.idega.data.IDOLookup;
@@ -24,12 +25,12 @@ import com.idega.xml.XMLElement;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2003</p>
  * <p>Company: idega Software</p>
- * @author aron 
+ * @author aron
  * @version 1.0
  */
 
 public class QueryConditionPart implements QueryPart {
-	
+
 	private String id = null;
 	private IDOEntityField idoField = null;
 	private String field = null;
@@ -37,19 +38,19 @@ public class QueryConditionPart implements QueryPart {
 	private String entity = null;
 	private String path = null;
 	private String type = null;
-	
+
 	// pattern variables
 	private String pattern = null;
 	// variabe above xor variable below is set
 	private Collection patterns = null;
-	
+
 	private String patternField = null;
 	private String patternPath = null;
-	
+
 	private String description = null;
 	private boolean lock = false;
 	private boolean dynamic = false;
-	
+
 	public static final String TYPE_LIKE = "like";
 	public static final String TYPE_EQ = "equal";
 	public static final String TYPE_NEQ = "not-equal";
@@ -59,19 +60,19 @@ public class QueryConditionPart implements QueryPart {
 	public static final String TYPE_LEQ = "less-than-or-equals";
 	public static final String PREFIX = "Cond";
 	private static final String[] TYPES = { TYPE_LIKE,TYPE_EQ,TYPE_NEQ,TYPE_LT,TYPE_GT,TYPE_GEQ,TYPE_LEQ};
-	
+
 	public static String[] getConditionTypes(){
 		return   TYPES;
 	}
-	
+
 	public QueryConditionPart() {
 	}
-	
-	
+
+
 //	public QueryConditionPart(int idNumber, String entity,String path, String field, String type, String pattern, String description) {
 //		this(new StringBuffer(PREFIX).append(idNumber).toString(), entity, path, field, type, pattern, description);
 //	}
-	
+
 //	public QueryConditionPart(String id, String entity,String path, String field, String type, String pattern, String description){
 //		this.id = id;
 //		this.entity = entity;
@@ -81,19 +82,19 @@ public class QueryConditionPart implements QueryPart {
 //		this.pattern = pattern;
 //		this.description = description;
 //	}
-	
-	
+
+
 //	public QueryConditionPart(int idNumber, String entity,String path, String field, String type, Collection patterns, String description) {
 //		this(new StringBuffer(PREFIX).append(idNumber).toString(), entity, path, field, type, patterns, description);
 //	}
 
-	
+
 //	public QueryConditionPart(String id, String entity,String path, String field, String type, Collection patterns, String description){
 //		this(id, entity, path, field, type, (String) null, description);
 //		this.patterns = patterns;
 //	}
 
-	
+
 	public QueryConditionPart(XMLElement xml){
 		this.id = xml.getAttribute(QueryXMLConstants.ID).getValue();
 		this.entity = xml.getAttribute(QueryXMLConstants.ENTITY).getValue();
@@ -121,7 +122,8 @@ public class QueryConditionPart implements QueryPart {
 			this.description = xml.getTextTrim(QueryXMLConstants.DESCRIPTION);
 		}
 	}
-	
+
+	@Override
 	public XMLElement getQueryElement() {
 		XMLElement el = new XMLElement(QueryXMLConstants.CONDITION);
 		el.setAttribute(QueryXMLConstants.ID, this.id);
@@ -162,26 +164,26 @@ public class QueryConditionPart implements QueryPart {
 		}
 		return el;
 	}
-	
+
 	private void addPattern(String pattern, XMLElement el) {
 		XMLElement xmlPattern = new XMLElement(QueryXMLConstants.PATTERN);
 		xmlPattern.addContent(pattern);
 		el.addContent(xmlPattern);
 	}
 
-		
-		
+
+
 	/**
 	 * @return
 	 */
 	private String getEntityClassName() {
 		return this.entity;
 	}
-	
+
 	public String getPath()	{
 		return this.path;
 	}
-	
+
 	/**
 	 * @param path The path to set.
 	 */
@@ -191,11 +193,12 @@ public class QueryConditionPart implements QueryPart {
 
 	private IDOEntityDefinition getIDOEntityDefinition() throws IDOLookupException, ClassNotFoundException{
 		if(this.entityDef==null){
-			this.entityDef = IDOLookup.getEntityDefinitionForClass(RefactorClassRegistry.forName(getEntityClassName()));
+			Class<? extends IDOEntity> entityClass = RefactorClassRegistry.forName(getEntityClassName());
+			this.entityDef = IDOLookup.getEntityDefinitionForClass(entityClass);
 		}
 		return this.entityDef;
 	}
-	
+
 	public IDOEntityField getIDOEntityField() throws IDOLookupException, ClassNotFoundException{
 		if(this.idoField==null){
 			IDOEntityDefinition def = getIDOEntityDefinition();
@@ -215,16 +218,16 @@ public class QueryConditionPart implements QueryPart {
 	public String getId()	{
 		return this.id;
 	}
-	
+
 	public void setIdUsingPrefix(int id) {
 		this.id = StringHandler.concat(PREFIX,Integer.toString(id));
 	}
-		
-	
+
+
 	public int getIdNumber()	{
 		return Integer.parseInt(this.id.substring(QueryConditionPart.PREFIX.length()));
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -235,8 +238,8 @@ public class QueryConditionPart implements QueryPart {
 	public Collection getPatterns() {
 		return this.patterns;
 	}
-	
-	
+
+
 	/**
 	 * @return
 	 */
@@ -246,7 +249,7 @@ public class QueryConditionPart implements QueryPart {
 
 	public String getDescription()	{
 		return this.description;
-	} 
+	}
 
 	/**
 	 * @return
@@ -262,7 +265,7 @@ public class QueryConditionPart implements QueryPart {
 	public void setEntity(String string) {
 	  this.entity = string;
 	}
-	
+
 	/**
 	 * @param string
 	 */
@@ -279,7 +282,7 @@ public class QueryConditionPart implements QueryPart {
 		this.patternField = null;
 		this.patternPath =null;
 	}
-	
+
 	/**
 	 * @param patterns The patterns to set.
 	 */
@@ -300,7 +303,8 @@ public class QueryConditionPart implements QueryPart {
 	public void setType(String string) {
 		this.type = string;
 	}
-	
+
+	@Override
 	public String encode(){
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(this.id).append(';');
@@ -321,7 +325,7 @@ public class QueryConditionPart implements QueryPart {
 		buffer.append(this.description);
 		return buffer.toString();
 	}
-	
+
 //	public static QueryConditionPart decode(String encoded){
 //		StringTokenizer toker = new StringTokenizer(encoded,";");
 //		int tokenNumber = toker.countTokens();
@@ -346,11 +350,12 @@ public class QueryConditionPart implements QueryPart {
 //			return new QueryConditionPart(id, entity, path, field, type, patterns, description);
 //		}
 //	}
-	
+
 
 	/* (non-Javadoc)
 	* @see com.idega.block.dataquery.business.QueryPart#isLocked()
 	*/
+	@Override
 	public boolean isLocked() {
 		return this.lock;
 	}
@@ -358,6 +363,7 @@ public class QueryConditionPart implements QueryPart {
 	/* (non-Javadoc)
 	 * @see com.idega.block.dataquery.business.QueryPart#setLocked(boolean)
 	 */
+	@Override
 	public void setLocked(boolean locked) {
 		this.lock = locked;
 	}

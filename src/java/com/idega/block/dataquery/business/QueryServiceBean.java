@@ -1,7 +1,7 @@
 /*
  * Created on May 22, 2003
  *
- * To change this generated comment go to 
+ * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code Template
  */
 package com.idega.block.dataquery.business;
@@ -20,10 +20,12 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+
 import com.idega.block.dataquery.data.QueryConstants;
 import com.idega.block.dataquery.data.QueryRepresentation;
 import com.idega.block.dataquery.data.QueryResult;
@@ -67,25 +69,28 @@ import com.idega.util.xml.XMLData;
  * @author thomas
  */
 public class QueryServiceBean extends IBOServiceBean implements QueryService  {
-	
-	private static final String COUNTER_TOKEN = "_"; 
+
+	private static final String COUNTER_TOKEN = "_";
 	private static final String DEFAULT_QUERY_NAME = "my query";
 	private  static final String NON_GROUPNAME_SUBSTITUTE = "-";
 
-	
+
 	private UserQueryHome userQueryHome;
 	private QuerySequenceHome querySequenceHome;
 
+	@Override
 	public QueryHelper getQueryHelper(UserQuery userQuery, IWContext iwc ) throws NumberFormatException, FinderException, IOException{
 		XMLData data = XMLData.getInstanceForFile(userQuery.getSource());
 		return new QueryHelper(data, userQuery, iwc);
 	}
-	
+
+	@Override
 	public QueryHelper getQueryHelper(int userQueryID, IWContext  iwc) throws NumberFormatException, FinderException, IOException{
 		UserQuery userQuery = getUserQueryHome().findByPrimaryKey(new Integer(userQueryID));
 		return getQueryHelper(userQuery, iwc);
 	}
-	
+
+	@Override
 	public QueryHelper getQueryHelperByNameAndPathToQuerySequence(String name, String path, IWContext iwc) throws NumberFormatException, FinderException, IOException {
 		String id = StringHandler.substringEnclosedBy(path, "(",")");
 		QuerySequence querySequence;
@@ -98,13 +103,15 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		UserQuery userQuery = querySequence.getRealQuery();
 		return getQueryHelper(userQuery, iwc);
 	}
-		
-	
+
+
+	@Override
 	public QueryHelper getQueryHelper(){
 		return new QueryHelper();
 	}
-	
-		
+
+
+	@Override
 	public Collection getInputHandlerNames()	{
 		try {
 			ICObjectHome objectHome = (ICObjectHome)IDOLookup.getHome(ICObject.class);
@@ -128,10 +135,11 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		return null;
 	}
 
-	
+
 	/**
 	 * @return null if nothing found
 	 */
+	@Override
 	public Collection getSourceQueryEntityParts() {
 		try {
 			ICObjectHome objectHome = (ICObjectHome)IDOLookup.getHome(ICObject.class);
@@ -153,18 +161,22 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return null;
 	}
-	
+
+	@Override
 	public Collection getRelatedQueryEntityParts(QueryEntityPart sourceEntityPart, int relationDepth)throws ClassNotFoundException{
-			return getRelatedQueryEntityParts(RefactorClassRegistry.forName(sourceEntityPart.getBeanClassName()),relationDepth);	
+			return getRelatedQueryEntityParts(RefactorClassRegistry.forName(sourceEntityPart.getBeanClassName()),relationDepth);
 		}
-	
+
+	@Override
 	public Collection getRelatedQueryEntityParts(String sourceEntity, int relationDepth)throws ClassNotFoundException{
-		return getRelatedQueryEntityParts(RefactorClassRegistry.forName(sourceEntity),relationDepth);	
+		return getRelatedQueryEntityParts(RefactorClassRegistry.forName(sourceEntity),relationDepth);
 	}
-	
+
+	@Override
 	public Collection getManyToManyEntityDefinitions(QueryEntityPart entityPart){
 		try {
-			IDOEntity entity = IDOLookup.create(RefactorClassRegistry.forName(entityPart.getBeanClassName()));
+			Class<? extends IDOEntity> entityClass = RefactorClassRegistry.forName(entityPart.getBeanClassName());
+			IDOEntity entity = IDOLookup.create(entityClass);
 			return Arrays.asList(entity.getEntityDefinition().getManyToManyRelatedEntities());
 		}
 		catch (ClassNotFoundException e) {
@@ -178,18 +190,19 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return null;
 	}
-	
+
 	/** Retrieves a collection of entities related to a givin entity provided the depth
 	 *  of interrogation.
 	 * @param sourceEntity
 	 * @param relationDepth
 	 * @return Collection, null if nothing found
 	 */
+	@Override
 	public Collection getRelatedQueryEntityParts(Class sourceEntity, int relationDepth){
 		System.out.println("Investigating "+sourceEntity.getName()+" depth : "+relationDepth);
 		GenericEntity entity = (GenericEntity) GenericEntity.getStaticInstance(sourceEntity);
 		if(entity==null || relationDepth == 0){
-			System.err.println("returns null"); 
+			System.err.println("returns null");
 			return null;
 		}
 		 Map map = new HashMap();
@@ -204,54 +217,58 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 				map.put(attribute.getName(),entityPart);
 				//Collection relatedColl = getRelatedQueryEntityParts(relationClass,relationDepth--);
 				//if(relatedColl!=null)
-				//	coll.addAll(relatedColl);				
-			}			
-		}		
+				//	coll.addAll(relatedColl);
+			}
+		}
 		return map.values();
 	}
-	
+
 	/** Retrieves a Collection of EntityAttribute objects of the given entity clazz
 	 * @param entityClass
 	 * @return Collection, null if nothing found.
 	 */
+	@Override
 	public Collection getEntityAttributes(Class entityClass){
 		GenericEntity entity =  (GenericEntity) GenericEntity.getStaticInstance(entityClass);
 		return entity.getAttributes();
 	}
-	
+
+	@Override
 	public Collection getEntityAttributes(QueryEntityPart entityPart){
 			GenericEntity entity =  GenericEntity.getStaticInstance(entityPart.getBeanClassName());
 			return entity.getAttributes();
 	}
-	
+
+	@Override
 	public QueryEntityPart getEntityTree(QueryHelper helper,int level){
-		if(helper.hasSourceEntity()){		
+		if(helper.hasSourceEntity()){
 			QueryEntityPart source = helper.getSourceEntity();
 			QueryEntityPart root = new QueryEntityPart(source.getName(),source.getBeanClassName());
 			root.setAsRootNode();
 			generateEntityTree(root,level-1);
 			return root;
 		}
-		return null;	
+		return null;
 	}
-	
+
+	@Override
 	public List getRelatedEntities(QueryHelper helper, int level) {
 		List resultList = new ArrayList();
-		if(helper.hasSourceEntity()){		
+		if(helper.hasSourceEntity()){
 			QueryEntityPart source = helper.getSourceEntity();
 			QueryEntityPart root = new QueryEntityPart(source.getName(),source.getBeanClassName());
 			root.setPath(source.getBeanClassName());
 			resultList.add(root);
 			getRelatedEntities(resultList, root,level-1);
 		}
-		return resultList;	
+		return resultList;
 	}
 
-	
+
 	private void generateEntityTree(QueryEntityPart node,int level){
 		if(node !=null){
 			// many-to-may entities
-			Collection manyToManyEntities = getManyToManyEntityDefinitions(node); 
+			Collection manyToManyEntities = getManyToManyEntityDefinitions(node);
 			Iterator iter ;
 			if(manyToManyEntities!=null && !manyToManyEntities.isEmpty()){
 				iter = manyToManyEntities.iterator();
@@ -281,21 +298,21 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 					//entityPart.setPath(child.getNodePath());
 					if(level>0){
 						generateEntityTree(child,level-1);
-					}	
-				}				
+					}
+				}
 			}
 			// many to many entities
-			
+
 		}
 		else {
 			System.out.println("no object");
 		}
 	}
-	
+
 	private void getRelatedEntities(List resultList, QueryEntityPart node, int level)	{
 		if(node !=null){
 			// many-to-may entities
-			Collection manyToManyEntities = getManyToManyEntityDefinitions(node); 
+			Collection manyToManyEntities = getManyToManyEntityDefinitions(node);
 			Iterator iter ;
 			if(manyToManyEntities!=null && !manyToManyEntities.isEmpty()){
 				iter = manyToManyEntities.iterator();
@@ -327,26 +344,27 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 					resultList.add(child);
 					if(level>0){
 						getRelatedEntities(resultList, child,level-1);
-					}	
-				}				
+					}
+				}
 			}
 			// many to many entities
-			
+
 		}
 		else {
 			System.out.println("no object");
 		}
 	}
 
-	
+
+	@Override
 	public Collection getListOfFieldParts(IWResourceBundle iwrb,QueryEntityPart entityPart, boolean expertMode){
 		Vector list = new Vector();
 		Iterator iter = getEntityAttributes(entityPart).iterator();
 		while (iter.hasNext()) {
 			EntityAttribute element = (EntityAttribute) iter.next();
 			// added by thomas, filter out confusing entities if the query builder does not work in the expert mode
-			if (	expertMode || 
-						! (	element.isOneToNRelationship() || 
+			if (	expertMode ||
+						! (	element.isOneToNRelationship() ||
 								element.isPartOfManyToOneRelationship() ||
 								element.isPrimaryKey())) {
 				list.add( createQueryFieldPart(iwrb,entityPart.getBeanClassName(), entityPart.getPath(), element));
@@ -354,14 +372,16 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return list;
 	}
-	
+
+	@Override
 	public QueryFieldPart createQueryFieldPart(IWResourceBundle iwrb,String entityName, String path, EntityAttribute attribute){
 		// name, aliasName, entity, path, column,function, display, typeClass, handlerClass, handlerDescription
 		return new QueryFieldPart(attribute.getName(), null, entityName, path, attribute.getColumnName(),(String)null,null,attribute.getStorageClassName(), null, null);
 	}
-	
-	
-	public QueryResult generateQueryResult(Integer userQueryID, IWContext iwc) throws QueryGenerationException{	
+
+
+	@Override
+	public QueryResult generateQueryResult(Integer userQueryID, IWContext iwc) throws QueryGenerationException{
 		try {
 			QueryHelper queryHelper = getQueryHelper(userQueryID.intValue(),iwc);
 			QueryToSQLBridge bridge = getQueryToSQLBridge();
@@ -381,11 +401,13 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			throw new QueryGenerationException(ioEx.getMessage());
 		}
 	}
-	
+
+	@Override
 	public QueryToSQLBridge getQueryToSQLBridge() throws RemoteException {
-		return (QueryToSQLBridge)getServiceInstance(QueryToSQLBridge.class);
+		return getServiceInstance(QueryToSQLBridge.class);
 	  }
-	
+
+	@Override
 	public UserQuery storeOrUpdateQuery(String name, QueryHelper queryHelper, boolean isPrivate, boolean overwriteQuery, IWUserContext iwuc) {
 		UserQuery userQuery = null;
 		UserTransaction transaction = getSessionContext().getUserTransaction();
@@ -393,7 +415,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			transaction.begin();
 	  	userQuery = storeOrUpdateQueryWithoutTransaction(name, queryHelper, isPrivate, overwriteQuery, iwuc);
 	  	transaction.commit();
-	  	
+
   	}
 		catch (Exception e) {
 			logError("[QueryService] Could not store or update UserQuery");
@@ -411,11 +433,11 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return userQuery;
 	}
-	
+
 	/**
 	 *  queryFile might be null.
-	 */ 
-	private UserQuery storeOrUpdateQueryWithoutTransaction(String name, QueryHelper queryHelper, boolean isPrivate, boolean overwriteQuery, IWUserContext iwuc) 
+	 */
+	private UserQuery storeOrUpdateQueryWithoutTransaction(String name, QueryHelper queryHelper, boolean isPrivate, boolean overwriteQuery, IWUserContext iwuc)
 			throws IDOStoreException, IOException, CreateException, SQLException, FinderException {
 		Group group = getCorrespondingGroup(iwuc);
 		// get user query, get xml data
@@ -460,8 +482,8 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return userQuery;
 	}
-	
-	
+
+
 	private Group getTopGroupForCurrentUser(IWUserContext iwuc) throws RemoteException {
 		User currentUser = iwuc.getCurrentUser();
 		UserBusiness userBusiness = getUserBusiness();
@@ -479,6 +501,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		return group;
 	}
 
+	@Override
 	public UserQuery storeQuery(String name, ICFile file, boolean isPrivate, Object userQueryToBeReplacedId, IWUserContext iwuc) {
 		UserQuery userQuery = null;
 		UserTransaction transaction = getSessionContext().getUserTransaction();
@@ -486,7 +509,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			transaction.begin();
 	  	userQuery = storeQueryWithoutTransaction(name, file, isPrivate, userQueryToBeReplacedId, iwuc);
 	  	transaction.commit();
-	  	
+
   	}
 		catch (Exception e) {
 			logError("[QueryService] Could not store UserQuery");
@@ -504,8 +527,8 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return userQuery;
 	}
-	
-	
+
+
 	private UserQuery storeQueryWithoutTransaction(String name, ICFile file, boolean isPrivate, Object userQueryToBeReplacedId, IWUserContext iwuc) throws CreateException, FinderException, RemoteException {
 		Group group = getCorrespondingGroup(iwuc);
 		name = modifyNameIfNameAlreadyExists(name, group);
@@ -552,7 +575,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return userQuery;
 	}
-	
+
 	/**
 	 * @param iwuc
 	 * @return
@@ -573,8 +596,8 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 	private String modifyNameIfNameAlreadyExists(String name, Group group) throws FinderException {
 		return modifyNameIfNameAlreadyExistsIgnoreUserQuery(null, name, group );
 	}
-	
-	
+
+
 	private String modifyNameIfNameAlreadyExistsIgnoreUserQuery(UserQuery ignoredUserQuery, String name, Group group) throws FinderException {
 		if (name == null || name.length() ==0) {
 			name = DEFAULT_QUERY_NAME;
@@ -584,7 +607,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			ignoredId = ignoredUserQuery.getPrimaryKey().toString();
 		}
 		Collection coll = getUserQueriesByGroup(group);
-		Collection existingStrings = new ArrayList(coll.size()); 
+		Collection existingStrings = new ArrayList(coll.size());
 		Iterator iterator = coll.iterator();
 		while (iterator.hasNext()) {
 			UserQuery userQuery = (UserQuery) iterator.next();
@@ -596,11 +619,11 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		return StringHandler.addOrIncreaseCounterIfNecessary(name,COUNTER_TOKEN,existingStrings);
 	}
 
-	
+
 	private void updateQueryData(String name, UserQuery userQuery, XMLData data, QueryHelper queryHelper, Group owner, boolean isPrivate) throws IOException {
 		// name within the query
 		queryHelper.setName(name);
-		// name of the file 
+		// name of the file
 		data.setName(name);
 		// name of the user query
 		userQuery.setName(name);
@@ -622,7 +645,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
   	 UserQueryHome queryHome = getUserQueryHome();
   	 return queryHome.findByGroup(group);
   }
-		
+
 
 	private QuerySequence createQuerySequence(String name, UserQuery userQuery, QueryHelper queryHelper) throws CreateException, SQLException {
 			QuerySequence querySequence = getQuerySequenceHome().create();
@@ -649,25 +672,26 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 
 	private UserBusiness getUserBusiness()	{
 		try {
-			return (UserBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), UserBusiness.class);
+			return IBOLookup.getServiceInstance(getIWApplicationContext(), UserBusiness.class);
 		}
 		catch (RemoteException ex)	{
       throw new RuntimeException("[QueryService]: Can't retrieve UserBusiness");
 		}
-	}	
-	
+	}
+
 	private GroupBusiness getGroupBusiness()	{
 		try {
-			return (GroupBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), GroupBusiness.class);
+			return IBOLookup.getServiceInstance(getIWApplicationContext(), GroupBusiness.class);
 		}
 		catch (RemoteException ex)	{
       throw new RuntimeException("[QueryService]: Can't retrieve GroupBusiness");
 		}
 	}
-	
-	
-		
-  public QuerySequenceHome getQuerySequenceHome(){
+
+
+
+  @Override
+public QuerySequenceHome getQuerySequenceHome(){
     if(this.querySequenceHome==null){
       try{
         this.querySequenceHome = (QuerySequenceHome)IDOLookup.getHome(QuerySequence.class);
@@ -678,7 +702,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
     }
     return this.querySequenceHome;
   }
-		
+
   private UserQueryHome getUserQueryHome(){
     if(this.userQueryHome==null){
       try{
@@ -690,8 +714,9 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
     }
     return this.userQueryHome;
   }
-		
-  public void removeUserQuery(Integer userQueryId, User user) {
+
+  @Override
+public void removeUserQuery(Integer userQueryId, User user) {
   	UserTransaction transaction = getSessionContext().getUserTransaction();
   	try {
 			transaction.begin();
@@ -717,19 +742,22 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
   }
 
-  
+
 	// returns a collection of EntityRepresentation
+	@Override
 	public Collection getQueries(IWContext iwc) throws RemoteException, FinderException {
 		return getQueries(iwc, -1);
 	}
-	
+
+	@Override
 	public Collection getOwnQueries(IWContext iwc) throws RemoteException, FinderException {
 		Group topGroup = getTopGroupForCurrentUser(iwc);
 		SortedMap queryRepresentations = new TreeMap(new StringAlphabeticalComparator(iwc.getCurrentLocale()));
 		getOwnQueries(topGroup,queryRepresentations);
 		return queryRepresentations.values();
 	}
-	
+
+	@Override
 	public Collection getQueries(IWContext iwc , int showOnlyOneQueryWithId) throws RemoteException, FinderException {
 			 //To keep them ordered alphabetically
 		SortedMap queryRepresentations = new TreeMap(new StringAlphabeticalComparator(iwc.getCurrentLocale()));
@@ -796,9 +824,9 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return queryRepresentations.values();
 	}
-	
 
-	
+
+
 	private void getAllQueriesForSuperAdministrator(SortedMap queryRepresentations, int showOnlyOneQueryWithId, Group superAdministrator) throws FinderException {
 		UserQueryHome userQueryHomeTemp = getUserQueryHome();
 		Collection userQueries = null;
@@ -812,16 +840,16 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		convertQueriesForSuperAdministrator(queryRepresentations, userQueries, superAdministrator);
 	}
-	
+
 	private void getOwnQueries(Group group, SortedMap queryRepresentations) throws  FinderException {
 		Collection userQueries = getUserQueriesByGroup(group);
 		String groupName = getNameForGroup(group);
 		convertQueries(queryRepresentations, userQueries, groupName, true);
 	}
-	
-	private void getPublicQueriesFromGroup(SortedMap queryRepresentations, Group group) throws FinderException { 
+
+	private void getPublicQueriesFromGroup(SortedMap queryRepresentations, Group group) throws FinderException {
 		// bad implementation:
-		// if the children list is empty null is returned. 
+		// if the children list is empty null is returned.
 		//TODO: thi: change the implementation
 		String groupName = getNameForGroup(group);
 		UserQueryHome userQueryHomeTemp = getUserQueryHome();
@@ -830,10 +858,10 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		convertQueries(queryRepresentations, userQueries, groupName, false);
 	}
 
-	private UserQuery getQuery( int showQueryWithId) throws FinderException { 
+	private UserQuery getQuery( int showQueryWithId) throws FinderException {
 		return getUserQueryHome().findByPrimaryKey(new Integer(showQueryWithId));
 	}
-	
+
 	private void checkAndAddPublicQuery(SortedMap queryRepresentations, Group group, UserQuery userQuery) {
 		// add only one user query to the list that is not deleted (usually this method is never called with an id of a deleted user query)
 		String permissionPublic = QueryConstants.PERMISSION_PUBLIC_QUERY;
@@ -849,8 +877,8 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			}
 		}
 	}
-	
-	private void checkAndAddOwnQuery(SortedMap queryRepresentations, Group group, UserQuery userQuery) { 
+
+	private void checkAndAddOwnQuery(SortedMap queryRepresentations, Group group, UserQuery userQuery) {
 		boolean isDeleted = userQuery.getDeleted();
 		if (! isDeleted) {
 			Group queryOwner = userQuery.getOwnership();
@@ -862,7 +890,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			}
 		}
 	}
-	
+
 	private String getNameForGroup(Group group) {
 		String groupName = group.getName();
 		if (groupName == null || groupName.length() == 0) {
@@ -870,7 +898,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		}
 		return groupName;
 	}
-	
+
 	private void convertQueriesForSuperAdministrator(SortedMap queryRepresentations, Collection userQueries, Group superAdministrator) {
 		Object superAdministratorID = superAdministrator.getPrimaryKey();
 		String superAdministratorName = superAdministrator.getName();
@@ -888,13 +916,13 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 			convertQuery(queryRepresentations, userQuery,ownerName, true);
 		}
 	}
-		
-	private void convertQueries(SortedMap queryRepresentations, Collection userQueries, String groupName,  boolean belongsToUser) { 
+
+	private void convertQueries(SortedMap queryRepresentations, Collection userQueries, String groupName,  boolean belongsToUser) {
 		Iterator iterator = userQueries.iterator();
 		while (iterator.hasNext())	{
 			UserQuery userQuery = (UserQuery) iterator.next();
 			convertQuery(queryRepresentations, userQuery, groupName, belongsToUser);
-		}  
+		}
 	}
 
 	private void convertQuery(SortedMap queryRepresentations, UserQuery userQuery, String ownerName, boolean belongsToUser) {
@@ -903,7 +931,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 		int id = ((Integer) userQuery.getPrimaryKey()).intValue();
 		String name = userQuery.getName();
 		int countOfSameName = 2;
-		
+
 		boolean alreadyAddedKey = queryRepresentations.containsKey(name);
 		if(alreadyAddedKey){
 			String newName = name;
@@ -911,7 +939,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 				//probably crappy code its 4am and i dead tired - Eiki
 				//query with the same name, cannot add to map directly until I change the key name a little to avoid overwrites
 				newName = new String(name+countOfSameName);
-				alreadyAddedKey = queryRepresentations.containsKey(newName);//if not we use that name	
+				alreadyAddedKey = queryRepresentations.containsKey(newName);//if not we use that name
 				countOfSameName++;
 			}
 			name = newName;

@@ -1,13 +1,14 @@
 /*
  * Created on May 26, 2003
  *
- * To change this generated comment go to 
+ * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code Template
  */
 package com.idega.block.dataquery.data.xml;
 
 import java.util.StringTokenizer;
 
+import com.idega.data.IDOEntity;
 import com.idega.data.IDOEntityDefinition;
 import com.idega.data.IDOEntityField;
 import com.idega.data.IDOLookup;
@@ -21,12 +22,12 @@ import com.idega.xml.XMLElement;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2003</p>
  * <p>Company: idega Software</p>
- * @author aron 
+ * @author aron
  * @version 1.0
  */
 
 public class QueryFieldPart implements QueryPart {
-	
+
 	private IDOEntityField idoField = null;
 	private IDOEntityDefinition entityDef = null;
 	private String name = null;
@@ -41,20 +42,20 @@ public class QueryFieldPart implements QueryPart {
 	private String handlerDescription = null;
 	private boolean locked = false;
 	private boolean hidden = false;
-	
-	
-// not used at the moment because function concat is not used at the moment	
+
+
+// not used at the moment because function concat is not used at the moment
 //	public QueryFieldPart(String name, String entity, String path, String[] columns,String function, String display,String typeClass, String handlerClass, String handlerDescription, String hidden){
 //		this(name,entity, path, "",function,display,typeClass, handlerClass, handlerDescription, Boolean.getBoolean(hidden));
 //		this.columns = stringArrayToCommaList(columns);
 //	}
-	
+
 	public QueryFieldPart(String name, String aliasName, String entity,String path, String column,String function,String display,String typeClass, String handlerClass, String handlerDescription){
 		this( name, aliasName, entity, path, column, function, display, typeClass, handlerClass, handlerDescription, false);
 	}
-	
-	
-	
+
+
+
 	public QueryFieldPart(String name, String aliasName, String entity,String path, String column,String function,String display,String typeClass, String handlerClass , String handlerDescription, boolean hidden){
 		this.name = convertNullStringToRealNull(name);
 		this.aliasName = convertNullStringToRealNull(aliasName);
@@ -68,7 +69,7 @@ public class QueryFieldPart implements QueryPart {
 		this.handlerDescription = convertNullStringToRealNull(handlerDescription);
 		this.hidden = hidden;
 	}
-	
+
 	public QueryFieldPart(XMLElement xml) {
 		this.name = xml.getAttribute(QueryXMLConstants.NAME).getValue();
 		this.entity = xml.getAttribute(QueryXMLConstants.ENTITY).getValue();
@@ -90,11 +91,12 @@ public class QueryFieldPart implements QueryPart {
 			this.hidden = (hidden!= null);
 		}
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see com.idega.block.dataquery.business.QueryPart#getQueryElement()
 	 */
+	@Override
 	public XMLElement getQueryElement() {
 		XMLElement el = new XMLElement(QueryXMLConstants.FIELD);
 		el.setAttribute(QueryXMLConstants.NAME,this.name);
@@ -149,7 +151,7 @@ public class QueryFieldPart implements QueryPart {
 	public String getEntity() {
 		return this.entity;
 	}
-	
+
 	public String getPath() {
 		return this.path;
 	}
@@ -171,7 +173,7 @@ public class QueryFieldPart implements QueryPart {
 	public String getAliasName() {
 		return (this.aliasName == null) ? this.name : this.aliasName;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -206,7 +208,7 @@ public class QueryFieldPart implements QueryPart {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public void setAliasName(String aliasName) {
 		this.aliasName = aliasName;
 	}
@@ -214,26 +216,26 @@ public class QueryFieldPart implements QueryPart {
 	public void setHandlerClass(String handlerClass)  {
 		this.handlerClass = handlerClass;
 	}
-	
+
 	public void setHandlerDescription(String handlerDescription) {
 		this.handlerDescription = handlerDescription;
 	}
-	
+
 	public String getHandlerClass()  {
 		return this.handlerClass;
 	}
-	
+
 	public String getHandlerDescription() {
 		return this.handlerDescription;
 	}
-	
+
 	/**
 	 * @param strings
 	 */
 	public void setColumns(String[] columnStrings) {
 		this.columns = stringArrayToCommaList(columnStrings);
 	}
-	
+
 	public void addColumn(String column){
 		if(getColumns()!=null && getColumns().length>0){
 			this.columns+=","+column;
@@ -242,24 +244,24 @@ public class QueryFieldPart implements QueryPart {
 			this.columns = column;
 		}
 	}
-	
+
 	public void addColumn(String[] columns){
 		if(columns!=null){
 			addColumn(stringArrayToCommaList(columns));
 		}
 	}
-	
+
 	public String stringArrayToCommaList(String[] array){
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < array.length; i++) {
 			if(i>0) {
 				buf.append(",");
 			}
-			buf.append(array[i]);				
+			buf.append(array[i]);
 		}
 		return buf.toString();
 	}
-	
+
 	public String[] commaListToArray(String commaList){
 		StringTokenizer tokenizer = new StringTokenizer(commaList,",");
 		String[] array = new String[tokenizer.countTokens()];
@@ -268,7 +270,8 @@ public class QueryFieldPart implements QueryPart {
 		}
 		return array;
 	}
-	
+
+	@Override
 	public String encode(){
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(this.name).append(';');   // 1
@@ -277,31 +280,31 @@ public class QueryFieldPart implements QueryPart {
 		buffer.append(this.path).append(';'); // 4
 		buffer.append(this.columns).append(';');  // 5
 		buffer.append(this.function).append(';'); // 6
-		buffer.append(this.display).append(';'); // 7 
-		buffer.append(this.typeClass).append(';'); // 8 
+		buffer.append(this.display).append(';'); // 7
+		buffer.append(this.typeClass).append(';'); // 8
 		buffer.append(this.handlerClass).append(';'); // 9
 		buffer.append(this.handlerDescription); // 10
 		// the property hidden is always set explicitly
-		// do not add hidden (encode/decode is used for comparision) 
-//		buffer.append(hidden);		
+		// do not add hidden (encode/decode is used for comparision)
+//		buffer.append(hidden);
 		return buffer.toString();
 	}
-	
+
 	public static QueryFieldPart  decode(String encoded){
 			StringTokenizer toker = new StringTokenizer(encoded,";");
 			if(toker.countTokens()== 10){
 				return new QueryFieldPart(toker.nextToken(),
-						toker.nextToken(), 
-						toker.nextToken(),
-						toker.nextToken(), 
 						toker.nextToken(),
 						toker.nextToken(),
 						toker.nextToken(),
-						toker.nextToken(), 
-						toker.nextToken(), 
+						toker.nextToken(),
+						toker.nextToken(),
+						toker.nextToken(),
+						toker.nextToken(),
+						toker.nextToken(),
 //						toker.nextToken(),
 						toker.nextToken());
-				
+
 			}
 			return null;
 	}
@@ -323,6 +326,7 @@ public class QueryFieldPart implements QueryPart {
 	/* (non-Javadoc)
 	 * @see com.idega.block.dataquery.business.QueryPart#isLocked()
 	 */
+	@Override
 	public boolean isLocked() {
 		return this.locked;
 	}
@@ -330,22 +334,24 @@ public class QueryFieldPart implements QueryPart {
 	public boolean isHidden()	{
 		return this.hidden;
 	}
-	
+
 	public void setHidden(boolean hidden)	{
 		this.hidden = hidden;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see com.idega.block.dataquery.business.QueryPart#setLocked(boolean)
 	 */
+	@Override
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
-	
+
 	private IDOEntityDefinition getIDOEntityDefinition() throws IDOLookupException, ClassNotFoundException{
 		if(this.entityDef==null){
-			this.entityDef = IDOLookup.getEntityDefinitionForClass(RefactorClassRegistry.forName(this.entity));
+			Class<? extends IDOEntity> entityClass = RefactorClassRegistry.forName(this.entity);
+			this.entityDef = IDOLookup.getEntityDefinitionForClass(entityClass);
 		}
 		return this.entityDef;
 	}
@@ -369,6 +375,6 @@ public class QueryFieldPart implements QueryPart {
 	private String convertNullStringToRealNull(String string)	{
 		return (string ==  null || string.equalsIgnoreCase("null")) ? null : string;
 	}
-		
-	
+
+
 }
