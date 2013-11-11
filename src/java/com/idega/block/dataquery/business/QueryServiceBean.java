@@ -175,7 +175,8 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 	@Override
 	public Collection getManyToManyEntityDefinitions(QueryEntityPart entityPart){
 		try {
-			IDOEntity entity = IDOLookup.create(RefactorClassRegistry.forName(entityPart.getBeanClassName()));
+			Class<? extends IDOEntity> entityClass = RefactorClassRegistry.forName(entityPart.getBeanClassName());
+			IDOEntity entity = IDOLookup.create(entityClass);
 			return Arrays.asList(entity.getEntityDefinition().getManyToManyRelatedEntities());
 		}
 		catch (ClassNotFoundException e) {
@@ -403,7 +404,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 
 	@Override
 	public QueryToSQLBridge getQueryToSQLBridge() throws RemoteException {
-		return (QueryToSQLBridge)getServiceInstance(QueryToSQLBridge.class);
+		return getServiceInstance(QueryToSQLBridge.class);
 	  }
 
 	@Override
@@ -671,7 +672,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 
 	private UserBusiness getUserBusiness()	{
 		try {
-			return (UserBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), UserBusiness.class);
+			return IBOLookup.getServiceInstance(getIWApplicationContext(), UserBusiness.class);
 		}
 		catch (RemoteException ex)	{
       throw new RuntimeException("[QueryService]: Can't retrieve UserBusiness");
@@ -680,7 +681,7 @@ public class QueryServiceBean extends IBOServiceBean implements QueryService  {
 
 	private GroupBusiness getGroupBusiness()	{
 		try {
-			return (GroupBusiness) IBOLookup.getServiceInstance(getIWApplicationContext(), GroupBusiness.class);
+			return IBOLookup.getServiceInstance(getIWApplicationContext(), GroupBusiness.class);
 		}
 		catch (RemoteException ex)	{
       throw new RuntimeException("[QueryService]: Can't retrieve GroupBusiness");
