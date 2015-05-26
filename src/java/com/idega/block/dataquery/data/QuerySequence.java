@@ -1,7 +1,7 @@
 package com.idega.block.dataquery.data;
 
 
-public interface QuerySequence extends com.idega.data.IDOEntity,com.idega.data.TreeableEntity
+public interface QuerySequence extends com.idega.data.IDOEntity, com.idega.data.TreeableEntity<QuerySequence>
 {
 	public java.lang.String getIDColumnName();
  public java.lang.String getName();

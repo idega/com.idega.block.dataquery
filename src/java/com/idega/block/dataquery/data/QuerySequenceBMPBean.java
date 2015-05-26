@@ -17,8 +17,9 @@ import com.idega.data.TreeableEntityBMPBean;
  * @version 1.0
  * Created on Feb 2, 2004
  */
-public class QuerySequenceBMPBean extends TreeableEntityBMPBean implements QuerySequence, TreeableEntity  {
-	
+public class QuerySequenceBMPBean extends TreeableEntityBMPBean<QuerySequence> implements QuerySequence  {
+
+	private static final long serialVersionUID = 7766094315832426362L;
 	private static final String ENTITY_NAME = "QUERY_SEQUENCE";
 	private static final String COLUMN_NAME_NAME = "NAME";
 	private static final String COLUMN_NAME_REAL_QUERY = "REAL_QUERY";
